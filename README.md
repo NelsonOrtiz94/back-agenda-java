@@ -82,12 +82,9 @@ Paso 2: Configuración en el Código
             .setPort(8080)
             .setCallbackPath("/oauth2/callback")
             .build();
-    return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
-}
+    return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");}```
 
-  ```
-
-- Asegúrate de que el ```Redirect URI``` configurado coincida con Google Cloud Console:
+Asegúrate de que el ```Redirect URI``` configurado coincida con Google Cloud Console:
 
 ```
 private static final String CREDENTIALS_FILE_PATH = "GOOGLE_CREDENTIALS";
