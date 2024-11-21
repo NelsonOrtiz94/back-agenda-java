@@ -10,7 +10,7 @@ El backend expone una API REST para interactuar con el frontend y realizar opera
 - Notificaciones por Correo: Envío de notificaciones a los usuarios mediante la API de Gmail con autenticación OAuth2.
 - Documentación: Integración con Swagger para documentar y probar los endpoints.
 - Manejo de Errores: Implementación de controladores de errores para respuestas consistentes.
-- Seguridad: Configuración básica para proteger los endpoints.
+- Seguridad: Configuración básica para proteger los endpoints con un archivo ```.env```
 
 ## Tecnologías Utilizadas
 - **Java**: Lenguaje principal.
@@ -40,6 +40,20 @@ src/
 │       └── credentials.json        # Credenciales para OAuth2
 └── test/                           # Pruebas unitarias
 ```
+## Configuración de Seguridad con .env
+
+Para proteger la información sensible como las credenciales de Google y las configuraciones del correo electrónico, se utiliza un archivo ```.env``` Este archivo debe incluir las siguientes variables de entorno:
+
+```
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/agendaeventos
+SPRING_DATASOURCE_USERNAME=tu_usuario
+SPRING_DATASOURCE_PASSWORD=tu_contraseña
+GOOGLE_CREDENTIALS={"installed":{"client_id":"tu_client_id","project_id":"tu_project_id","auth_uri":"https://accounts.google.com/o/oauth2/auth","token_uri":"https://oauth2.googleapis.com/token","auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs","client_secret":"tu_client_secret","redirect_uris":["http://localhost:8080/oauth2/callback"]}}
+SPRING_MAIL_USERNAME=correo@example.com
+SPRING_MAIL_PASSWORD=tu_contraseña
+
+```
+
 ## Configuración de Autenticación OAuth2 para Gmail
 
 Paso 1: Configurar el Proyecto en Google Cloud Console
@@ -54,6 +68,24 @@ Paso 1: Configurar el Proyecto en Google Cloud Console
 Paso 2: Configuración en el Código
 
 - Modifica la clase ```GmailService``` para usar ```GOOGLE_CREDENTIALS```.
+
+  ```
+  private static final String REDIRECT_URI = "http://localhost:8080/oauth2/callback";
+
+  private static Credential authorize(final NetHttpTransport httpTransport) throws IOException {
+    GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new StringReader(System.getenv("GOOGLE_CREDENTIALS")));
+    GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
+            httpTransport, JSON_FACTORY, clientSecrets, SCOPES)
+            .setAccessType("offline")
+            .build();
+    LocalServerReceiver receiver = new LocalServerReceiver.Builder()
+            .setPort(8080)
+            .setCallbackPath("/oauth2/callback")
+            .build();
+    return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
+}
+
+  ```
 
 - Asegúrate de que el ```Redirect URI``` configurado coincida con Google Cloud Console:
 
