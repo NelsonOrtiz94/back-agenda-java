@@ -49,16 +49,16 @@ Paso 1: Configurar el Proyecto en Google Cloud Console
 - Crea credenciales OAuth2:
    - Tipo: ID de cliente de OAuth.
     - URI de redirección autorizado: ```http://localhost:8080/oauth2/callback```.
-- Descarga el archivo ```credentials.json``` y colócalo en ```src/main/resources/```.
+- Descarga el archivo ```GOOGLE_CREDENTIALS``` y colócalo en ```resources```.
 
 Paso 2: Configuración en el Código
 
-- Modifica la clase ```GmailService``` para usar ```credentials.json```.
+- Modifica la clase ```GmailService``` para usar ```GOOGLE_CREDENTIALS```.
 
 - Asegúrate de que el ```Redirect URI``` configurado coincida con Google Cloud Console:
 
 ```
-private static final String CREDENTIALS_FILE_PATH = "src/main/resources/credentials.json";
+private static final String CREDENTIALS_FILE_PATH = "GOOGLE_CREDENTIALS";
 private static final String REDIRECT_URI = "http://localhost:8080/oauth2/callback";
 ```
 
@@ -86,8 +86,7 @@ Requisitos
 Clona el repositorio:
 
 ```plaintext
-git clone https://github.com/tu-usuario/agenda-eventos-backend.git
-cd agenda-eventos-backend
+git clone https://github.com/NelsonOrtiz94/back-agenda-java.git
 ```
 
 ## Configura las variables de entorno o modifica application.properties para la conexión con PostgreSQL:
